@@ -5,6 +5,7 @@ const app = express();
 const port = 8080;
 const path = require("path");
 const methodOverride = require("method-override");
+const { v4: uuidv4 } = require('uuid');
 
 app.use(methodOverride("_method"));
 app.use(express.urlencoded({extended: true}));
@@ -38,7 +39,27 @@ app.get("/", (req, res) => {
     } catch (err){
       res.send("Some error in database");
     };
-})
+});
+
+//ADD Route
+app.get("/user/new", (req, res) => {
+  res.render("new.ejs")
+});
+
+//Post Route
+app.post("/user", (req, res) => {
+  let {username, email, password} = req.body;
+  let id = uuidv4();
+  let q = `INSERT INTO user (id, username, email, password) VALUES ('${id}', '${username}', '${email}', '${password}')`;
+  try{
+    connection.query(q, (err, user) => {
+      if(err) throw err;
+      res.redirect("/user");
+    });
+  } catch (err) {
+    res.send("some error in databse");
+  }
+});
 
 app.get("/user", (req, res) => {
   let q = "SELECT * FROM user";
@@ -46,7 +67,7 @@ app.get("/user", (req, res) => {
     connection.query(q, (err, users) => {
       if(err) throw err;
       res.render("user.ejs", { users });
-    })
+    });
   } catch (err){
     res.send("Some error in database");
   };
@@ -82,7 +103,7 @@ app.patch("/user/:id", (req, res) => {
         let q2 = `UPDATE user SET username='${newUsername}' WHERE id='${id}'`;
         connection.query(q2, (err, result) => {
           if (err) throw err;
-          res.redirect("/user");
+          res.redirect("/");
         });
       }
     });

@@ -6,7 +6,17 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Total number of users in database : <%= count %></h1>
-    <button>Join us today</button>
+    <h1>Total number of users in database : <%= count %>
+    </h1>
+    <form action="/user/new" method="get">
+        <button>Join us today</button>
+    </form>
+    <br>
+    <br>
+    <hr>
+    <h4>Visit our User database</h4>
+    <form action="/user">
+        <button>Users</button>
+    </form>
 </body>
 </html>
