@@ -112,6 +112,44 @@ app.patch("/user/:id", (req, res) => {
   };
 });
 
+//delete route
+app.get("/user/:id/delete", (req, res) => {
+  let id = req.params.id;
+  let q = `SELECT * FROM user WHERE id='${id}'`;
+  try{
+    connection.query(q, (err, result) => {
+      if(err) throw err;
+      let user = result[0]
+      res.render("delete.ejs", { user });
+    }); 
+  } catch (err){
+    res.send("Some error in database");
+  };
+}) 
+
+app.delete("/user/:id", (req, res) => { 
+  let id = req.params.id;
+  let{password, email} = req.body;
+  let q = `SELECT * FROM user where id='${id}'`
+  try{
+    connection.query(q, (err, result) => {
+      if(err) throw err;
+      let user = result[0];
+      if(password != user.password) {
+        res.send("Wrong Password");
+      } else {
+        let q2 = `DELETE FROM user WHERE id='${id}'`;
+        connection.query(q2, (err, result) => {
+          if(err) throw err;
+          res.redirect("/user");
+        })
+      }
+    })
+  } catch (err){
+    res.send("Some error in database");
+  };
+})
+
 app.listen(port, () => {
     console.log(`Server Listening on port ${port}`);
 });
