@@ -135,7 +135,7 @@ app.delete("/user/:id", (req, res) => {
     connection.query(q, (err, result) => {
       if(err) throw err;
       let user = result[0];
-      if(password != user.password) {
+      if(password !== user.password || email !== user.email) {
         res.send("Wrong Password");
       } else {
         let q2 = `DELETE FROM user WHERE id='${id}'`;
@@ -166,3 +166,4 @@ app.listen(port, () => {
 //   };
 //   connection.end();
 
+ 
